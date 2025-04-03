@@ -1,52 +1,49 @@
-# This is a basic workflow that is manually triggered
+name: CloudFormation Create
+run-name: CloudFormation Create Stack in ${{ github.ref_name }} by ${{ github.actor }}
 
-# Display name of workflow
-name: Basic Workflow
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: "Person to greet"
-        # Default value if no value is explicitly provided
-        default: "World"
-        # Input has to be provided for the workflow to run
+      aws-role-arn:
+        description: Arn of the role to be assumed.
         required: true
-        # Input Type (string, choice, boolean)
+        default: arn:aws:iam::637423502513:role/subhamay-github-oidc-role
         type: string
-      city:
-        description: "Favorite city"
+      aws-region:
+        description: AWS region where the services will be deployed
         required: true
-        default: "Tupelo"
-        type: choice
-        options:
-          - New York
-          - Seattle
-          - Tupelo
-      fav-color-blue:
-        description: "Is your favorite color blue"
-        required: true
-        type: boolean
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+        default: us-east-1
+        type: string
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # Display name for the job
-    name: "Greetings, Program!"
-
-    # The type of runner that the job will run on, in this case a Linus hosted runner
-    runs-on:
-      - ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  cfn-create:
+    name: Create Stack
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+      # To use OIDC
+      id-token: write
+      
     steps:
-      # Runs command(s) using the runners shell and gets context from the github object
-      - name: Send greeting
+      - name: Checkout Code
+        id: git-checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials from AWS account
+        id: aws-config
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ inputs.aws-role-arn }}
+          aws-region: ${{ inputs.aws-region }}
+          role-session-name: github-aws-terraform-oidc
+
+      - name: List the files in the workspace
+        id: list-file
         run: |
-          echo "Hello ${{ github.event.inputs.name }}" 
-          echo "Your favorite city is ${{ github.event.inputs.city }}"
-          echo "Is your favorite color blue: ${{ github.event.inputs.fav-color-blue }}"
+          cd ${{ github.workspace }}
+          ls -LR
