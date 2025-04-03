@@ -5,15 +5,21 @@ on:
   workflow_dispatch:
     inputs:
       aws-role-arn:
-        description: Arn of the role to be assumed.
+        description: 'Arn of the role to be assumed.'
+        type: string
         required: true
         default: arn:aws:iam::637423502513:role/subhamay-github-oidc-role
-        type: string
       aws-region:
         description: AWS region where the services will be deployed
+        type: string
         required: true
         default: us-east-1
+      cfn-params-file:
+        description: 'CloudFormation parameters file'
         type: string
+        required: true
+        default: './cfn/params/cfn-parameters.json'
+
 jobs:
   cfn-create:
     name: Create Stack
@@ -40,7 +46,7 @@ jobs:
         with:
           role-to-assume: ${{ inputs.aws-role-arn }}
           aws-region: ${{ inputs.aws-region }}
-          role-session-name: github-aws-terraform-oidc
+          role-session-name: github-aws-cloudformation-oidc
 
       - name: List the files in the workspace
         id: list-file
@@ -48,10 +54,21 @@ jobs:
           cd ${{ github.workspace }}
           ls -LR
 
-      - name: Create the Stack
-        run: |
-          aws cloudformation create-stack \
-          --stack-name template-repo-stack \
-          --template-body file://${{ github.workspace }}/cfn/root-stack-template.yaml \
-          --capabilities CAPABILITY_NAMED_IAM
+      - name: Generate CFN parameters
+        uses: subhamay-bhattacharyya-gha/cfn-parameters-action@main
+        id: gen-params
+        with:
+          config-file: ${{ inputs.cfn-params-file }}
+          environment: devl
+
+      -  name: Print CFN paremeters
+         run: |
+           echo "Parameters - ${{ steps.gen-params.outputs.parameters }}"
+          
+      # - name: Create the Stack
+      #   run: |
+      #     aws cloudformation create-stack \
+      #     --stack-name template-repo-stack \
+      #     --template-body file://${{ github.workspace }}/cfn/root-stack-template.yaml \
+      #     --capabilities CAPABILITY_NAMED_IAM
 
