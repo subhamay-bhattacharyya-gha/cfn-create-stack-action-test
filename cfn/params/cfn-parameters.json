@@ -1,0 +1,23 @@
+{
+    "project-name": "template",
+    "stack-prefix": "test",
+    "stack-suffix": "stack",
+    "template-path": "/cfn/root-stack-template.yaml",
+    "parameters": {
+        "devl": [
+            {
+                "Environment": "devl"
+            }
+        ],
+        "test": [
+            {
+                "Environment": "test"
+            }
+        ],
+        "prod": [
+            {
+                "Environment": "prod"
+            }
+        ]
+    }
+}
