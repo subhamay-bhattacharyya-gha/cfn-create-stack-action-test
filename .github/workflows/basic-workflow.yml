@@ -47,3 +47,11 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           ls -LR
+
+      - name: Create the Stack
+        run: |
+          aws cloudformation create-stack \
+          --stack-name MyS3BucketStack \
+          --template-body file://${{ github.workspace }}/cfn/root-stack-template.yaml \
+          --capabilities CAPABILITY_NAMED_IAM
+
