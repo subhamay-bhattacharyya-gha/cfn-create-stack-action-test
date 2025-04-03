@@ -53,7 +53,11 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           ls -LR
-
+          
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ github.workspace }}
+        
       - name: Generate CFN parameters
         uses: subhamay-bhattacharyya-gha/cfn-parameters-action@main
         id: gen-params
