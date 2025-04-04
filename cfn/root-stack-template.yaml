@@ -28,7 +28,7 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the project the bucket is associated with
-    Default: GitHubACtion
+    Default: GitHubAction
 
   CiBuild:
     Type: String
