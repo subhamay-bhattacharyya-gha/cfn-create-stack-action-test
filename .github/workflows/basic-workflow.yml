@@ -65,9 +65,11 @@ jobs:
           config-file: ${{ inputs.cfn-params-file }}
           environment: devl
 
-      -  name: Print CFN paremeters
-         run: |
-           echo "Parameters - ${{ steps.gen-params.outputs.parameters }}"
+      - name: Print CFN parameters
+        run: |
+          echo "CloudFormation Parameters:"
+          echo "${{ steps.gen-params.outputs.parameters }}"
+
           
       # - name: Create the Stack
       #   run: |
