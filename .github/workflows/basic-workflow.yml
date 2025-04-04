@@ -68,7 +68,10 @@ jobs:
       - name: Print CFN parameters
         run: |
           echo "CloudFormation Parameters:"
-          echo "${{ steps.gen-params.outputs.parameters }}"
+          echo "Parameters : ${{ steps.gen-params.outputs.parameters }}"
+          echo "Stack Name: ${{ steps.gen-params.outputs.stack-name }}"
+          echo "Template Path: ${{ steps.gen-params.outputs.template-path }}"
+          echo "Ci Build Identifier: ${{ steps.gen-params.outputs.ci-build-identifier }}"
 
           
       # - name: Create the Stack
