@@ -91,7 +91,7 @@ jobs:
         run: echo "Hello from Create Ci Stack"
 
   delete-ci-stack:
-    if: success()
+    if: always()
     name: Delete Ci Stack
     runs-on: ubuntu-latest
     needs:
