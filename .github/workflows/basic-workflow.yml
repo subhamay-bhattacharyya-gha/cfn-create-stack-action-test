@@ -19,6 +19,11 @@ on:
         type: string
         required: true
         default: './cfn/params/cfn-parameters.json'
+      ci-build:
+        description: 'Is this a Ci Build ?'
+        type: boolean
+        required: true
+        default: true
 
 jobs:
   cfn-create:
@@ -64,6 +69,7 @@ jobs:
         with:
           config-file: ${{ inputs.cfn-params-file }}
           environment: devl
+          ci-build: ${{ inputs.ci-build }}
 
       - name: Print CFN parameters
         run: |
