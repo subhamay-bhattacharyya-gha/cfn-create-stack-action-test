@@ -33,11 +33,40 @@ jobs:
       - name: Scan the repo
         run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
 
+  build-lambda-code:
+    name: Build Lambda code
+    runs-on: ubuntu-latest
+    needs:
+      - devsecops-scan
+    steps:
+      - name: Build Code
+        run: echo "Hello from Build Lambda code"
+        
+  build-glue-code:
+    name: Build Glue code
+    runs-on: ubuntu-latest
+    needs:
+      - devsecops-scan
+    steps:
+      - name: Build Glue Code
+        run: echo "Hello from Build Glue code"
+
+  build-state-machine:
+    name: Build State Machine
+    runs-on: ubuntu-latest
+    needs:
+      - devsecops-scan
+    steps:
+      - name: Build State Machine
+        run: echo "Hello from Build State Machine"
+        
   build-ci-stack:
     name: Build Ci Stack
     runs-on: ubuntu-latest
     needs:
-      - devsecops-scan
+      - build-lambda-code
+      - build-glue-code
+      - build-state-machine
     steps:
       - name: Create Ci Stack
         run: echo "Hello from Create Ci Stack"
