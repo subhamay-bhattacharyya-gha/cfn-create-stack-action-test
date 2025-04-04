@@ -68,20 +68,20 @@ jobs:
           environment: devl
           ci-build: ${{ inputs.ci-build }}
 
-      - name: Print CFN parameters
-        run: |
-          echo "CloudFormation Parameters:"
-          echo "Parameters : ${{ steps.gen-params.outputs.parameters }}"
-          echo "Stack Name: ${{ steps.gen-params.outputs.stack-name }}"
-          echo "Template Path: ${{ steps.gen-params.outputs.template-path }}"
-          echo "Ci Build Identifier: ${{ steps.gen-params.outputs.ci-build-identifier }}"
+      # - name: Print CFN parameters
+      #   run: |
+      #     echo "CloudFormation Parameters:"
+      #     echo "Parameters : ${{ steps.gen-params.outputs.parameters }}"
+      #     echo "Stack Name: ${{ steps.gen-params.outputs.stack-name }}"
+      #     echo "Template Path: ${{ steps.gen-params.outputs.template-path }}"
+      #     echo "Ci Build Identifier: ${{ steps.gen-params.outputs.ci-build-identifier }}"
 
           
       - name: Create the Stack
         run: |
           aws cloudformation create-stack \
           --stack-name ${{ steps.gen-params.outputs.stack-name }} \
-          --parameters ${{ steps.gen-params.outputs.parameters }} \
+          --parameters ${{ steps.gen-params.outputs.parameters }} 
           --template-body file://${{ github.workspace }}${{ steps.gen-params.outputs.template-path }} \
           --region ${{ inputs.aws-region }} \
           --capabilities CAPABILITY_NAMED_IAM
