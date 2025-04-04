@@ -30,11 +30,16 @@ Parameters:
     Description: Name of the project the bucket is associated with
     Default: GitHubACtion
 
+  CiBuild:
+    Type: String
+    Description: "CiBuild Identifier."
+    Default: ""
+
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BucketName
+      BucketName: !Sub "${BucketName}${CiBuild}"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
