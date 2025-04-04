@@ -80,9 +80,50 @@ jobs:
       - name: Create the Stack
         run: |
           aws cloudformation create-stack \
-          --stack-name template-repo-stack \
+          --stack-name ${{ steps.gen-params.outputs.stack-name }} \
+          --parameters ${{ steps.gen-params.outputs.parameters }} \
           --template-body file://${{ github.workspace }}${{ steps.gen-params.outputs.template-path }} \
           --region ${{ inputs.aws-region }} \
-          --debug \
           --capabilities CAPABILITY_NAMED_IAM
+
+          echo "🚀 Stack creation started: $STACK_NAME"
+          echo "📡 Monitoring stack events..."
+          
+          LAST_EVENT_ID=""
+          
+          # Poll stack events until the stack is complete or fails
+          while true; do
+            EVENTS=$(aws cloudformation describe-stack-events \
+              --stack-name "$STACK_NAME" \
+              --region "$REGION" \
+              --output json)
+          
+            # Extract and print new events only
+            echo "$EVENTS" | jq -r '.StackEvents[] | "\(.Timestamp) \(.ResourceStatus) \(.LogicalResourceId) \(.ResourceType) \(.ResourceStatusReason // "")"' |
+              tac | while read -r LINE; do
+                EVENT_ID=$(echo "$LINE" | md5sum | awk '{print $1}')
+                if [[ "$EVENT_ID" != "$LAST_EVENT_ID" ]]; then
+                  echo "$LINE"
+                  LAST_EVENT_ID="$EVENT_ID"
+                fi
+              done
+          
+            # Check stack status
+            STATUS=$(aws cloudformation describe-stacks \
+              --stack-name "$STACK_NAME" \
+              --region "$REGION" \
+              --query "Stacks[0].StackStatus" \
+              --output text)
+          
+            if [[ "$STATUS" == "CREATE_COMPLETE" ]]; then
+              echo "✅ Stack creation completed!"
+              break
+            elif [[ "$STATUS" == "ROLLBACK_COMPLETE" || "$STATUS" == "CREATE_FAILED" ]]; then
+              echo "❌ Stack creation failed with status: $STATUS"
+              break
+            fi
+          
+            sleep 5
+          done
+
 
