@@ -94,8 +94,8 @@ jobs:
           # Poll stack events until the stack is complete or fails
           while true; do
             EVENTS=$(aws cloudformation describe-stack-events \
-              --stack-name "$STACK_NAME" \
-              --region "$REGION" \
+              --stack-name "${{ steps.gen-params.outputs.stack-name }}" \
+              --region "${{ inputs.aws-region }}" \
               --output json)
           
             # Extract and print new events only
@@ -110,8 +110,8 @@ jobs:
           
             # Check stack status
             STATUS=$(aws cloudformation describe-stacks \
-              --stack-name "$STACK_NAME" \
-              --region "$REGION" \
+              --stack-name "${{ steps.gen-params.outputs.stack-name }}" \
+              --region "${{ inputs.aws-region }}" \
               --query "Stacks[0].StackStatus" \
               --output text)
           
