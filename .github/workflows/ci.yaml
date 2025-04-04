@@ -34,7 +34,7 @@ jobs:
         run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
 
   build-ci-stack:
-    name: Build Stack
+    name: Build Ci Stack
     runs-on: ubuntu-latest
     needs:
       - devsecops-scan
