@@ -61,7 +61,7 @@ jobs:
           ls -LR
           
       - name: Generate CFN parameters
-        uses: subhamay-bhattacharyya-gha/cfn-parameters-action@feature/SB-0001-create-new-action
+        uses: subhamay-bhattacharyya-gha/cfn-parameters-action@feature/SB-0002-fix-cfn-params
         id: gen-params
         with:
           config-file: ${{ inputs.cfn-params-file }}
