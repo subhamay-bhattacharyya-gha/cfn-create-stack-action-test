@@ -40,26 +40,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure AWS credentials from AWS account
-        id: aws-config
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          role-to-assume: ${{ inputs.aws-role-arn }}
-          aws-region: ${{ inputs.aws-region }}
-          role-session-name: github-aws-cloudformation-oidc
+      # - name: Configure AWS credentials from AWS account
+      #   id: aws-config
+      #   uses: aws-actions/configure-aws-credentials@v4.0.2
+      #   with:
+      #     role-to-assume: ${{ inputs.aws-role-arn }}
+      #     aws-region: ${{ inputs.aws-region }}
+      #     role-session-name: github-aws-cloudformation-oidc
 
-      - name: List the files in the workspace
-        id: list-file
-        run: |
-          cd ${{ github.workspace }}
-          ls -LR
+      # - name: List the files in the workspace
+      #   id: list-file
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     ls -LR
           
-      - name: Install dependencies
-        run: npm install
-        working-directory: ${{ github.workspace }}
+      # - name: Install dependencies
+      #   run: npm install
+      #   working-directory: ${{ github.workspace }}
         
       - name: Generate CFN parameters
-        uses: subhamay-bhattacharyya-gha/cfn-parameters-action@main
+        uses: subhamay-bhattacharyya-gha/cfn-parameters-action@feature/SB-0001-create-new-action
         id: gen-params
         with:
           config-file: ${{ inputs.cfn-params-file }}
