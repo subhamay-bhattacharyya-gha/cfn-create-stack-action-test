@@ -1,0 +1,54 @@
+name: CloudFormation Build
+run-name: Build Stack in ${{ github.ref_name }} by ${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws-role-arn:
+        description: 'Arn of the role to be assumed.'
+        type: string
+        required: true
+        default: arn:aws:iam::637423502513:role/subhamay-github-oidc-role
+      aws-region:
+        description: AWS region where the services will be deployed
+        type: string
+        required: true
+        default: us-east-1
+      cfn-params-file:
+        description: 'CloudFormation parameters file'
+        type: string
+        required: true
+        default: './cfn/params/cfn-parameters.json'
+      ci-build:
+        description: 'Is this a Ci Build ?'
+        type: boolean
+        required: true
+        default: true
+
+jobs:
+  devsecops-scan:
+    name: DevSecOps Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan the repo
+        run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
+
+  build-ci-stack:
+    name: Build Stack
+    runs-on: ubuntu-latest
+    needs:
+      - devsecops-scan
+    steps:
+      - name: Create Ci Stack
+        run: echo "Hello from Create Ci Stack"
+
+  delete-ci-stack:
+    name: Delete Ci Stack
+    runs-on: ubuntu-latest
+    needs:
+      - build-ci-stack
+    steps:
+      - name: Delete Ci Stack
+        run: echo "Hello from Delete Ci Stack"
+        
+
