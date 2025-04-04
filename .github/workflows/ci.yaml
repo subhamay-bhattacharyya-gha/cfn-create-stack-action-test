@@ -50,5 +50,22 @@ jobs:
     steps:
       - name: Delete Ci Stack
         run: echo "Hello from Delete Ci Stack"
-        
+
+  upload-artifacts:
+    name: Upload Release Artifacts
+    runs-on: ubuntu-latest
+    needs:
+      - delete-ci-stack
+    steps:
+      - name: Upload Release Artifacts
+        run: echo "Hello from Upload Release Artifacts"
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs:
+      - upload-artifacts
+    steps:
+      - name: Create Release
+        run: echo "Hello from Create Release"
 
