@@ -24,6 +24,21 @@ on:
         type: boolean
         required: true
         default: true
+      lambda:
+        description: 'Is this repo contains Lambda?'
+        type: boolean
+        required: true
+        default: false
+      glue:
+        description: 'Is this repo contains Glue?'
+        type: boolean
+        required: true
+        default: false
+      state-machine:
+        description: 'Is this repo contains State Machine?'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   devsecops-scan:
@@ -34,6 +49,7 @@ jobs:
         run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
 
   build-lambda-code:
+    if:  github.event.inputs.lambda == 'true'
     name: Build Lambda code
     runs-on: ubuntu-latest
     needs:
@@ -43,6 +59,7 @@ jobs:
         run: echo "Hello from Build Lambda code"
         
   build-glue-code:
+    if:  github.event.inputs.glue == 'true'
     name: Build Glue code
     runs-on: ubuntu-latest
     needs:
@@ -52,6 +69,7 @@ jobs:
         run: echo "Hello from Build Glue code"
 
   build-state-machine:
+    if:  github.event.inputs.state-machine == 'true'
     name: Build State Machine
     runs-on: ubuntu-latest
     needs:
@@ -61,6 +79,7 @@ jobs:
         run: echo "Hello from Build State Machine"
         
   build-ci-stack:
+    if: always()
     name: Build Ci Stack
     runs-on: ubuntu-latest
     needs:
