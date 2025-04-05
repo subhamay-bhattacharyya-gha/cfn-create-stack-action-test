@@ -83,35 +83,78 @@ jobs:
           # echo "*************   checkov-problem-matcher-softfail.json  ************************" 
           # cat checkov-problem-matcher-softfail.json
           # echo "==============================================================================="
-          echo "*************   checkov-problem-matcher.json  *********************************" 
-          cat checkov-problem-matcher.json
+          # echo "*************   checkov-problem-matcher.json  *********************************" 
+          # cat checkov-problem-matcher.json
           # echo "==============================================================================="
-          # echo "*************   results.sarif  ************************************************" 
-          # cat results.sarif
-          # echo "==============================================================================="
+          echo "*************   results.sarif  ************************************************" 
+          cat results.sarif
+          echo "==============================================================================="
 
-      - name: 📋 Summarize Checkov Scan Report
-        if: always()
+      - name: 📋 Summarize and Print Checkov Scan Report with Snippets
         run: |
           echo "### 🛡️ Checkov Scan Report Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Rule ID | Description | File | Start Line | End Line | Severity |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|-------------|------|------------|----------|----------|" >> $GITHUB_STEP_SUMMARY
       
+          echo "=========== RAW CHECKOV FINDINGS ===========" 
+          echo "| Rule ID | Description | File | Start | End | Severity |"
+      
           jq -r '
             .runs[0].results[] as $result |
             .runs[0].tool.driver.rules[$result.ruleIndex] as $rule |
-            [
-              $result.ruleId,
-              $rule.shortDescription.text,
-              $result.locations[0].physicalLocation.artifactLocation.uri,
-              $result.locations[0].physicalLocation.region.startLine,
-              $result.locations[0].physicalLocation.region.endLine,
-              $result.level
-            ] | @tsv
-          ' results.sarif | while IFS=$'\t' read -r ruleId desc file start end level; do
+            {
+              ruleId: $result.ruleId,
+              desc: $rule.shortDescription.text,
+              file: $result.locations[0].physicalLocation.artifactLocation.uri,
+              start: $result.locations[0].physicalLocation.region.startLine,
+              end: $result.locations[0].physicalLocation.region.endLine,
+              level: $result.level,
+              snippet: $result.locations[0].physicalLocation.region.snippet.text
+            } | @base64
+          ' checkov.sarif | while read -r item; do
+            _jq() {
+              echo "${item}" | base64 --decode | jq -r "${1}"
+            }
+      
+            ruleId=$(_jq '.ruleId')
+            desc=$(_jq '.desc')
+            file=$(_jq '.file')
+            start=$(_jq '.start')
+            end=$(_jq '.end')
+            level=$(_jq '.level')
+            snippet=$(_jq '.snippet')
+      
+            # Summary table
             echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
+      
+            # Print to console
+            echo "| $ruleId | $desc | $file | $start | $end | $level |"
+            
+            # Detailed snippet section (summary + console)
+            {
+              echo ""
+              echo "**🔎 Rule \`$ruleId\` — $desc**"
+              echo ""
+              echo "- **File:** \`$file\`"
+              echo "- **Lines:** $start - $end"
+              echo "- **Severity:** $level"
+              echo ""
+              echo "```yaml"
+              echo "$snippet"
+              echo "```"
+              echo ""
+            } >> $GITHUB_STEP_SUMMARY
+      
+            # Also output to console
+            echo ""
+            echo "🔎 Rule $ruleId — $desc"
+            echo "File: $file | Lines: $start-$end | Severity: $level"
+            echo "------- Code Snippet -------"
+            echo "$snippet"
+            echo ""
           done
+
 
 
                 
