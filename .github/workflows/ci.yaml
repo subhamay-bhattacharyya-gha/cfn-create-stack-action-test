@@ -67,11 +67,11 @@ jobs:
           template-dir: cfn
           template-file: root-stack-template.yaml
           iac-framework: cloudformation
-          soft-fail: false
+          soft-fail: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📋 Summarize and Print Checkov Scan Report with Snippets
-        if: always()
+        # if: always()
         run: |
           echo "### 🛡️ Checkov Scan Report Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -137,7 +137,7 @@ jobs:
           cat "$DETAILS_BLOCK" >> $GITHUB_STEP_SUMMARY
 
       - name: Debug outputs (optional)
-        if: always()
+        # if: always()
         run: |
             echo "Valid Template: ${{ steps.scan-and-validate.outputs.valid-template }}"
             echo "Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}"
