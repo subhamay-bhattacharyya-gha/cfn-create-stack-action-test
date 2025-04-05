@@ -49,37 +49,51 @@ jobs:
         run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
 
   build-lambda-code:
-    if:  github.event.inputs.lambda == 'true'
     name: Build Lambda code
     runs-on: ubuntu-latest
     needs:
       - devsecops-scan
     steps:
       - name: Build Code
-        run: echo "Hello from Build Lambda code"
+        if:  github.event.inputs.lambda == 'true'
+        run: |
+          echo "Build Lambda Code"
+
+      - name: Dummy Step
+        run: |
+          echo "Dummy Step"
+        
         
   build-glue-code:
-    if:  github.event.inputs.glue == 'true'
     name: Build Glue code
     runs-on: ubuntu-latest
     needs:
       - devsecops-scan
     steps:
       - name: Build Glue Code
-        run: echo "Hello from Build Glue code"
+        if:  github.event.inputs.glue == 'true'
+        run: |
+          echo "Scan and upload Glue Code to S3"
+
+      - name: Dummy Step
+        run: |
+          echo "Dummy Step"
 
   build-state-machine:
-    if:  github.event.inputs.state-machine == 'true'
     name: Build State Machine
     runs-on: ubuntu-latest
     needs:
       - devsecops-scan
     steps:
       - name: Build State Machine
+        if:  github.event.inputs.state-machine == 'true'
         run: echo "Hello from Build State Machine"
+
+      - name: Dummy Step
+        run: |
+          echo "Dummy Step"
         
   build-ci-stack:
-    if: always()
     name: Build Ci Stack
     runs-on: ubuntu-latest
     needs:
@@ -91,7 +105,6 @@ jobs:
         run: echo "Hello from Create Ci Stack"
 
   delete-ci-stack:
-    if: always()
     name: Delete Ci Stack
     runs-on: ubuntu-latest
     needs:
@@ -101,10 +114,10 @@ jobs:
         run: echo "Hello from Delete Ci Stack"
 
   upload-artifacts:
-    if: success()
     name: Upload Release Artifacts
     runs-on: ubuntu-latest
     needs:
+      - build-ci-stack
       - delete-ci-stack
     steps:
       - name: Upload Release Artifacts
