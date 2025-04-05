@@ -95,11 +95,13 @@ jobs:
         run: |
           echo "### 🛡️ Checkov Scan Report Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+      
+          # Table of summary (no code snippet here)
           echo "| Rule ID | Description | File | Start Line | End Line | Severity |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|-------------|------|------------|----------|----------|" >> $GITHUB_STEP_SUMMARY
       
-          echo "=========== RAW CHECKOV FINDINGS ===========" 
-          echo "| Rule ID | Description | File | Start | End | Severity |"
+          # Prepare a temp file to store the detailed blocks after the summary table
+          DETAILS_BLOCK=$(mktemp)
       
           jq -r '
             .runs[0].results[] as $result |
@@ -126,35 +128,34 @@ jobs:
             level=$(_jq '.level')
             snippet=$(_jq '.snippet')
       
-            # Summary table
+            # Append to summary table
             echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
       
-            # Print to console
-            echo "| $ruleId | $desc | $file | $start | $end | $level |"
-            
-            # Detailed snippet section (summary + console)
+            # Append to detailed section
             {
               echo ""
-              echo "**🔎 Rule \`$ruleId\` — $desc**"
-              echo ""
+              echo "#### 🔍 $ruleId — $desc"
               echo "- **File:** \`$file\`"
               echo "- **Lines:** $start - $end"
               echo "- **Severity:** $level"
               echo ""
-              echo "```yaml"
+              echo "**Code Snippet:**"
+              echo '```yaml'
               echo "$snippet"
-              echo "```"
-              echo ""
-            } >> $GITHUB_STEP_SUMMARY
+              echo '```'
+              echo "---"
+            } >> "$DETAILS_BLOCK"
       
-            # Also output to console
-            echo ""
-            echo "🔎 Rule $ruleId — $desc"
-            echo "File: $file | Lines: $start-$end | Severity: $level"
-            echo "------- Code Snippet -------"
-            echo "$snippet"
-            echo ""
+            # Optional: also print to console
+            echo "[Checkov] $ruleId - $desc ($file:$start-$end): $level"
           done
+      
+          # Append details section to summary
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📄 Detailed Findings" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat "$DETAILS_BLOCK" >> $GITHUB_STEP_SUMMARY
+
 
 
 
