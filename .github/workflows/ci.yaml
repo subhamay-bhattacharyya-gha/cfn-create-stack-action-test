@@ -78,6 +78,15 @@ jobs:
       - name: List the files
         run: |
           ls -LR
+          echo "*************   checkov-problem-matcher-softfail.json  ************************" 
+          cat checkov-problem-matcher-softfail.json
+          echo "==============================================================================="
+          echo "*************   checkov-problem-matcher.json  *********************************" 
+          cat checkov-problem-matcher.json
+          echo "==============================================================================="
+          echo "*************   results.sarif  ************************************************" 
+          results.sarif
+          echo "==============================================================================="
 
       - name: Add validation summary
         run: |
