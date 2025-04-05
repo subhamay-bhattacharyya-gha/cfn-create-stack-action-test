@@ -73,8 +73,8 @@ jobs:
       - name: Add validation summary
         run: |
           echo "### CloudFormation Validation Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Is Template Valid? ${{ steps.scan-validate.outputs.valid-template }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Validation Error: ${{ steps.scan-validate.outputs.validation-error }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Template Validation: ${{ steps.scan-and-validate.outputs.valid-template }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}" >> $GITHUB_STEP_SUMMARY
                 
   build-lambda-code:
     name: Build Lambda code
