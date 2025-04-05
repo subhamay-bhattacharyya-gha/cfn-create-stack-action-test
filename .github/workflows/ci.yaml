@@ -88,19 +88,28 @@ jobs:
           cat results.sarif
           echo "==============================================================================="
 
-      - name: Add validation summary
+      - name: 📋 Summarize Checkov Scan Report
         run: |
-          echo "### 🛡️ Scan and Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "### 🛡️ Checkov Scan Report Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Rule ID | Description | File | Start Line | End Line | Severity |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------------|------|------------|----------|----------|" >> $GITHUB_STEP_SUMMARY
       
-          echo "| Scan Name          | Result | Validation Error|" >> $GITHUB_STEP_SUMMARY
-          echo "|--------------------|--------|-----------------|" >> $GITHUB_STEP_SUMMARY
-      
-          if [[ "${{ steps.scan-and-validate.outputs.valid-template }}" == "true" ]]; then
-            echo "| Checkov Scan        | ✅ Passed | - |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Template Validation | ❌ Failed |\`${{ steps.scan-and-validate.outputs.validation-error }}\` |" >> $GITHUB_STEP_SUMMARY
-          fi
+          jq -r '
+            .runs[0].results[] as $result |
+            .runs[0].tool.driver.rules[$result.ruleIndex] as $rule |
+            [
+              $result.ruleId,
+              $rule.shortDescription.text,
+              $result.locations[0].physicalLocation.artifactLocation.uri,
+              $result.locations[0].physicalLocation.region.startLine,
+              $result.locations[0].physicalLocation.region.endLine,
+              $result.level
+            ] | @tsv
+          ' checkov.sarif | while IFS=$'\t' read -r ruleId desc file start end level; do
+            echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
+          done
+
 
 
                 
