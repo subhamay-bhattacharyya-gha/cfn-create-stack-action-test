@@ -80,15 +80,15 @@ jobs:
         if: always()
         run: |
           ls -LR
-          echo "*************   checkov-problem-matcher-softfail.json  ************************" 
-          cat checkov-problem-matcher-softfail.json
-          echo "==============================================================================="
-          echo "*************   checkov-problem-matcher.json  *********************************" 
-          cat checkov-problem-matcher.json
-          echo "==============================================================================="
-          echo "*************   results.sarif  ************************************************" 
-          cat results.sarif
-          echo "==============================================================================="
+          # echo "*************   checkov-problem-matcher-softfail.json  ************************" 
+          # cat checkov-problem-matcher-softfail.json
+          # echo "==============================================================================="
+          # echo "*************   checkov-problem-matcher.json  *********************************" 
+          # cat checkov-problem-matcher.json
+          # echo "==============================================================================="
+          # echo "*************   results.sarif  ************************************************" 
+          # cat results.sarif
+          # echo "==============================================================================="
 
       - name: 📋 Summarize Checkov Scan Report
         if: always()
@@ -109,10 +109,9 @@ jobs:
               $result.locations[0].physicalLocation.region.endLine,
               $result.level
             ] | @tsv
-          ' checkov.sarif | while IFS=$'\t' read -r ruleId desc file start end level; do
+          ' results.sarif | while IFS=$'\t' read -r ruleId desc file start end level; do
             echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
           done
-
 
 
                 
