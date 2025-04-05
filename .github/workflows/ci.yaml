@@ -83,8 +83,8 @@ jobs:
           # echo "*************   checkov-problem-matcher-softfail.json  ************************" 
           # cat checkov-problem-matcher-softfail.json
           # echo "==============================================================================="
-          # echo "*************   checkov-problem-matcher.json  *********************************" 
-          # cat checkov-problem-matcher.json
+          echo "*************   checkov-problem-matcher.json  *********************************" 
+          cat checkov-problem-matcher.json
           # echo "==============================================================================="
           # echo "*************   results.sarif  ************************************************" 
           # cat results.sarif
