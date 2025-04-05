@@ -70,11 +70,20 @@ jobs:
           soft-fail: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Debug outputs (optional)
+        run: |
+            echo "Valid Template: ${{ steps.scan-and-validate.outputs.valid-template }}"
+            echo "Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}"
+
       - name: Add validation summary
         run: |
-          echo "### CloudFormation Validation Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Template Validation: ${{ steps.scan-and-validate.outputs.valid-template }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "### 🛡️ CloudFormation Template Validation Results"
+            echo ""
+            echo "**Template Validation:** \`${{ steps.scan-and-validate.outputs.valid-template }}\`"
+            echo "**Validation Error:** \`${{ steps.scan-and-validate.outputs.validation-error }}\`"
+          } >> $GITHUB_STEP_SUMMARY
+
                 
   build-lambda-code:
     name: Build Lambda code
