@@ -75,16 +75,24 @@ jobs:
             echo "Valid Template: ${{ steps.scan-and-validate.outputs.valid-template }}"
             echo "Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}"
 
+      - name: List the files
+        run: |
+          ls -LR
+
       - name: Add validation summary
         run: |
-          echo "### 🛡️ CloudFormation Template Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "### 🛡️ Scan and Validation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
       
+          echo "| Item               | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------------------|--------|" >> $GITHUB_STEP_SUMMARY
+      
           if [[ "${{ steps.scan-and-validate.outputs.valid-template }}" == "true" ]]; then
-            echo "**Template Validation:** Passed ✅" >> $GITHUB_STEP_SUMMARY
+            echo "| Template Validation | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            echo "| Validation Error    | None |" >> $GITHUB_STEP_SUMMARY
           else
-            echo "**Template Validation:** Failed ❌" >> $GITHUB_STEP_SUMMARY
-            echo "**Validation Error:** \`${{ steps.scan-and-validate.outputs.validation-error }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "| Template Validation | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+            echo "| Validation Error    | \`${{ steps.scan-and-validate.outputs.validation-error }}\` |" >> $GITHUB_STEP_SUMMARY
           fi
 
 
