@@ -91,6 +91,7 @@ jobs:
           echo "==============================================================================="
 
       - name: 📋 Summarize and Print Checkov Scan Report with Snippets
+        if: always()
         run: |
           echo "### 🛡️ Checkov Scan Report Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
