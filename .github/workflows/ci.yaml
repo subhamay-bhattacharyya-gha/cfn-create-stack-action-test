@@ -51,8 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Scan and Validate CloudFormation Template
-        id: scan-validate
-        uses: subhamay-bhattacharyya-gha/scan-and-validate@main
+        id: scan-and-validate
+        uses: subhamay-bhattacharyya-gha/cfn-validate-scan-action@main
         with:
           aws-role-arn: ${{ inputs.aws-role-arn }}
           aws-region: ${{ inputs.aws-region }}
