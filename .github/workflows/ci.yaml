@@ -112,7 +112,7 @@ jobs:
               level: $result.level,
               snippet: $result.locations[0].physicalLocation.region.snippet.text
             } | @base64
-          ' checkov.sarif | while read -r item; do
+          ' results.sarif | while read -r item; do
             _jq() {
               echo "${item}" | base64 --decode | jq -r "${1}"
             }
