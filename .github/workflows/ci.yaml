@@ -60,7 +60,6 @@ jobs:
     steps:
       - name: Scan and Validate CloudFormation Template
         id: scan-and-validate
-        continue-on-error: true
         uses: subhamay-bhattacharyya-gha/cfn-validate-scan-action@main
         with:
           aws-role-arn: ${{ inputs.aws-role-arn }}
@@ -70,22 +69,6 @@ jobs:
           iac-framework: cloudformation
           soft-fail: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-      - name: List the files
-        if: always()
-        run: |
-          ls -LR
-          # echo "*************   checkov-problem-matcher-softfail.json  ************************" 
-          # cat checkov-problem-matcher-softfail.json
-          # echo "==============================================================================="
-          # echo "*************   checkov-problem-matcher.json  *********************************" 
-          # cat checkov-problem-matcher.json
-          # echo "==============================================================================="
-          echo "*************   results.sarif  ************************************************" 
-          cat results.sarif
-          echo "==============================================================================="
 
       - name: 📋 Summarize and Print Checkov Scan Report with Snippets
         if: always()
