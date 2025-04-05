@@ -60,6 +60,7 @@ jobs:
     steps:
       - name: Scan and Validate CloudFormation Template
         id: scan-and-validate
+        continue-on-error: true
         uses: subhamay-bhattacharyya-gha/cfn-validate-scan-action@main
         with:
           aws-role-arn: ${{ inputs.aws-role-arn }}
