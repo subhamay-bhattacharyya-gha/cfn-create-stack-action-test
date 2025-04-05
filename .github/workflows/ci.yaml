@@ -84,11 +84,11 @@ jobs:
           echo "### 🛡️ Scan and Validation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
       
-          echo "| Item               | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "| Scan Name          | Result |" >> $GITHUB_STEP_SUMMARY
           echo "|--------------------|--------|" >> $GITHUB_STEP_SUMMARY
       
           if [[ "${{ steps.scan-and-validate.outputs.valid-template }}" == "true" ]]; then
-            echo "| Template Validation | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            echo "| Checkov Scan        | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
             echo "| Validation Error    | None |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| Template Validation | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
