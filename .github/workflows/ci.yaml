@@ -14,6 +14,11 @@ on:
         type: string
         required: true
         default: us-east-1
+      cfn-template-file:
+        description: 'CloudFormation template file name'
+        type: string
+        required: true
+        default: 'root-stack-template.yaml'
       cfn-params-file:
         description: 'CloudFormation parameters file'
         type: string
@@ -45,9 +50,24 @@ jobs:
     name: DevSecOps Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Scan the repo
-        run: echo "Hello from Job 1. Run Job 3 equals ${{ github.event.inputs.run-job-3 }}"
+      - name: Scan and Validate CloudFormation Template
+        id: scan-validate
+        uses: subhamay-bhattacharyya-gha/scan-and-validate@main
+        with:
+          aws-role-arn: ${{ inputs.aws-role-arn }}
+          aws-region: ${{ inputs.aws-region }}
+          template-dir: cfn
+          template-file: root-stack-template.yaml
+          iac-framework: cloudformation
+          soft-fail: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Add validation summary
+        run: |
+          echo "### CloudFormation Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Is Template Valid? ${{ steps.scan-validate.outputs.valid-template }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Validation Error: ${{ steps.scan-validate.outputs.validation-error }}" >> $GITHUB_STEP_SUMMARY
+                
   build-lambda-code:
     name: Build Lambda code
     runs-on: ubuntu-latest
