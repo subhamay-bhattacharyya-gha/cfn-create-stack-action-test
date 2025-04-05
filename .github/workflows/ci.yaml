@@ -71,11 +71,7 @@ jobs:
           soft-fail: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Debug outputs (optional)
-        if: always()
-        run: |
-            echo "Valid Template: ${{ steps.scan-and-validate.outputs.valid-template }}"
-            echo "Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}"
+
 
       - name: List the files
         if: always()
@@ -157,7 +153,11 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           cat "$DETAILS_BLOCK" >> $GITHUB_STEP_SUMMARY
 
-
+      - name: Debug outputs (optional)
+        if: always()
+        run: |
+            echo "Valid Template: ${{ steps.scan-and-validate.outputs.valid-template }}"
+            echo "Validation Error: ${{ steps.scan-and-validate.outputs.validation-error }}"
 
 
                 
