@@ -69,72 +69,75 @@ jobs:
           iac-framework: cloudformation
           soft-fail: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
+          
       - name: 📋 Summarize and Print Checkov Scan Report with Snippets
-        # if: always()
-        run: |
-          echo "### 🛡️ Checkov Scan Report " >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+        uses: subhamay-bhattacharyya-gha/checkov-report-action@feature/SB-0001-create-new-action
+
+      # - name: 📋 Summarize and Print Checkov Scan Report with Snippets
+      #   # if: always()
+      #   run: |
+      #     echo "### 🛡️ Checkov Scan Report " >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
       
-          # Table of summary (no code snippet here)
-          echo "| Rule ID | Description | File | Start Line | End Line | Severity |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|-------------|------|------------|----------|----------|" >> $GITHUB_STEP_SUMMARY
+      #     # Table of summary (no code snippet here)
+      #     echo "| Rule ID | Description | File | Start Line | End Line | Severity |" >> $GITHUB_STEP_SUMMARY
+      #     echo "|---------|-------------|------|------------|----------|----------|" >> $GITHUB_STEP_SUMMARY
       
-          # Prepare a temp file to store the detailed blocks after the summary table
-          DETAILS_BLOCK=$(mktemp)
+      #     # Prepare a temp file to store the detailed blocks after the summary table
+      #     DETAILS_BLOCK=$(mktemp)
       
-          jq -r '
-            .runs[0].results[] as $result |
-            .runs[0].tool.driver.rules[$result.ruleIndex] as $rule |
-            {
-              ruleId: $result.ruleId,
-              desc: $rule.shortDescription.text,
-              file: $result.locations[0].physicalLocation.artifactLocation.uri,
-              start: $result.locations[0].physicalLocation.region.startLine,
-              end: $result.locations[0].physicalLocation.region.endLine,
-              level: $result.level,
-              snippet: $result.locations[0].physicalLocation.region.snippet.text
-            } | @base64
-          ' results.sarif | while read -r item; do
-            _jq() {
-              echo "${item}" | base64 --decode | jq -r "${1}"
-            }
+      #     jq -r '
+      #       .runs[0].results[] as $result |
+      #       .runs[0].tool.driver.rules[$result.ruleIndex] as $rule |
+      #       {
+      #         ruleId: $result.ruleId,
+      #         desc: $rule.shortDescription.text,
+      #         file: $result.locations[0].physicalLocation.artifactLocation.uri,
+      #         start: $result.locations[0].physicalLocation.region.startLine,
+      #         end: $result.locations[0].physicalLocation.region.endLine,
+      #         level: $result.level,
+      #         snippet: $result.locations[0].physicalLocation.region.snippet.text
+      #       } | @base64
+      #     ' results.sarif | while read -r item; do
+      #       _jq() {
+      #         echo "${item}" | base64 --decode | jq -r "${1}"
+      #       }
       
-            ruleId=$(_jq '.ruleId')
-            desc=$(_jq '.desc')
-            file=$(_jq '.file')
-            start=$(_jq '.start')
-            end=$(_jq '.end')
-            level=$(_jq '.level')
-            snippet=$(_jq '.snippet')
+      #       ruleId=$(_jq '.ruleId')
+      #       desc=$(_jq '.desc')
+      #       file=$(_jq '.file')
+      #       start=$(_jq '.start')
+      #       end=$(_jq '.end')
+      #       level=$(_jq '.level')
+      #       snippet=$(_jq '.snippet')
       
-            # Append to summary table
-            echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
+      #       # Append to summary table
+      #       echo "| \`$ruleId\` | $desc | \`$file\` | $start | $end | $level |" >> $GITHUB_STEP_SUMMARY
       
-            # Append to detailed section
-            {
-              echo ""
-              echo "#### 🔍 $ruleId — $desc"
-              echo "- **File:** \`$file\`"
-              echo "- **Lines:** $start - $end"
-              echo "- **Severity:** $level"
-              echo ""
-              echo "**Code Snippet:**"
-              echo '```yaml'
-              echo "$snippet"
-              echo '```'
-              echo "---"
-            } >> "$DETAILS_BLOCK"
+      #       # Append to detailed section
+      #       {
+      #         echo ""
+      #         echo "#### 🔍 $ruleId — $desc"
+      #         echo "- **File:** \`$file\`"
+      #         echo "- **Lines:** $start - $end"
+      #         echo "- **Severity:** $level"
+      #         echo ""
+      #         echo "**Code Snippet:**"
+      #         echo '```yaml'
+      #         echo "$snippet"
+      #         echo '```'
+      #         echo "---"
+      #       } >> "$DETAILS_BLOCK"
       
-            # Optional: also print to console
-            echo "[Checkov] $ruleId - $desc ($file:$start-$end): $level"
-          done
+      #       # Optional: also print to console
+      #       echo "[Checkov] $ruleId - $desc ($file:$start-$end): $level"
+      #     done
       
-          # Append details section to summary
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📄 Detailed Findings" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cat "$DETAILS_BLOCK" >> $GITHUB_STEP_SUMMARY
+      #     # Append details section to summary
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "### 📄 Detailed Findings" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     cat "$DETAILS_BLOCK" >> $GITHUB_STEP_SUMMARY
 
       - name: Debug outputs (optional)
         # if: always()
