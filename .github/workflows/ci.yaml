@@ -68,7 +68,7 @@ jobs:
           template-file: root-stack-template.yaml
           iac-framework: cloudformation
           soft-fail: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-organization-id: ${{ secrets.SNYK_ORGANIZATION_ID }}
 
