@@ -69,6 +69,8 @@ jobs:
           iac-framework: cloudformation
           soft-fail: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-organization-id: ${{ secrets.SNYK_ORGANIZATION_ID }}
 
       -  name: List the available files
          run: |
