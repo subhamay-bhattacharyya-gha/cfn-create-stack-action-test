@@ -69,6 +69,10 @@ jobs:
           iac-framework: cloudformation
           soft-fail: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      -  name: List the available files
+         run: |
+           ls -LR
           
       - name: 📋 Summarize and Print Checkov Scan Report with Snippets
         uses: subhamay-bhattacharyya-gha/checkov-report-action@feature/SB-0001-create-new-action
