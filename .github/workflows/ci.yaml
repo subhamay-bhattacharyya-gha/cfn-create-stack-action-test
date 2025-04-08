@@ -148,8 +148,10 @@ jobs:
     name: Prepare Build Jobs
     runs-on: ubuntu-latest
     needs:
-      - scan-iac
-      - scan-code
+      - cfn-lint
+      - cfn-validate
+      - checkov-scan
+      - snyk-scan
     steps:
       - name: Preparation Complete
         run: echo "Build jobs can now run."
