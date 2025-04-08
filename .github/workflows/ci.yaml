@@ -96,6 +96,7 @@ jobs:
     name: Build Code
     runs-on: ubuntu-latest
     needs: 
+      -  scan-services
       -  scan-iac
       -  scan-code
     steps:
