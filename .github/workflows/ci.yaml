@@ -73,7 +73,7 @@ jobs:
            echo "Determine the AWS services used"
 
   scan-iac:
-    name: DevSecOps Scan (IaC vulnarabilities)
+    name: DevSecOps IaC Scan
     runs-on: ubuntu-latest
     needs: 
       -  files-updated
@@ -83,7 +83,7 @@ jobs:
            echo "Checkov Scan"
 
   scan-code:
-    name: DevSecOps Scan (Code vulnarabilities)
+    name: DevSecOps Code Scan
     runs-on: ubuntu-latest
     needs: 
       -  scan-services
