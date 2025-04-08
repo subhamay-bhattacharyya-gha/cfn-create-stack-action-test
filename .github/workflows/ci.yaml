@@ -202,7 +202,27 @@ jobs:
       - name: Finalize CI Build
         run: echo "CI build completed regardless of individual builds."
 
+  infra-cost:
+    name: Infra Cost
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.inputs.ci-build == 'true' }}
+    # if: always()
+    needs:
+      - ci-build
+    steps:
+      - name: Determine Infra Cost
+        run: echo "Determine Infra Cost."
 
+  release-button:
+    name: Create Release button
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.inputs.ci-build == 'true' }}
+    # if: always()
+    needs:
+      - infra-cost
+    steps:
+      - name: Create Release Button
+        run: echo "Create Release Button."
 
 
   # build-test:
