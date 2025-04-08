@@ -136,7 +136,8 @@ jobs:
   ci-build:
     name: CI Build
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.ci-build == 'true' }}
+    # if: ${{ github.event.inputs.ci-build == 'true' }}
+    if: always()
     needs:
       - build-lambda
       - build-lambda-layer
