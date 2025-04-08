@@ -1,4 +1,4 @@
-name: CloudFormation Build
+name: CloudFormation Build Backup
 run-name: Build Stack in ${{ github.ref_name }} by ${{ github.actor }}
 
 on:
