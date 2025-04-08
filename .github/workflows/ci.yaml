@@ -5,115 +5,121 @@ on:
   workflow_dispatch:
     inputs:
       aws-role-arn:
-        description: 'Arn of the role to be assumed.'
+        description: 'ARN of the role to be assumed.'
         type: string
         required: true
         default: arn:aws:iam::637423502513:role/subhamay-github-oidc-role
       aws-region:
-        description: AWS region where the services will be deployed
+        description: 'AWS region where the services will be deployed.'
         type: string
         required: true
         default: us-east-1
       cfn-template-file:
-        description: 'CloudFormation template file name'
+        description: 'CloudFormation template file name.'
         type: string
         required: true
         default: 'root-stack-template.yaml'
       cfn-params-file:
-        description: 'CloudFormation parameters file'
+        description: 'CloudFormation parameters file.'
         type: string
         required: true
         default: './cfn/params/cfn-parameters.json'
       ci-build:
-        description: 'Is this a Ci Build ?'
+        description: 'Is this a CI build?'
         type: boolean
         required: true
         default: true
       lambda:
-        description: 'Is this repo contains Lambda?'
+        description: 'Does this repository contain Lambda functions?'
         type: boolean
         required: true
         default: false
       glue:
-        description: 'Is this repo contains Glue?'
+        description: 'Does this repository contain AWS Glue scripts?'
         type: boolean
         required: true
         default: false
       state-machine:
-        description: 'Is this repo contains State Machine?'
+        description: 'Does this repository contain a State Machine?'
         type: boolean
         required: true
         default: false
-        
+
 permissions:
-  # contents: read
-  # packages: read
-  # To report GitHub Actions status checks
-  # statuses: write
-  # To use OIDC
-  id-token: write
+  id-token: write  # Required for OIDC role assumption
 
 jobs:
-  _1-files-updated:
-    name: Files Updated.
+  files-updated:
+    name: Files Updated
     runs-on: ubuntu-latest
     steps:
-      - name: List the files updated since last commit
+      - name: List Changed Files
         run: |
-            echo "List of files updated since last commit."
+          # TODO: Invoke a GitHub Custom Action to determine the
+          #       list of files added / modified / deleted since last commit
+          echo "List of files updated since last commit."
 
-  _2-scan-services:
-    name: Determine Services
+  detect-services:
+    name: Detect Used AWS Services
     runs-on: ubuntu-latest
-    needs: 
-      -  _1-files-updated
+    needs:
+      - files-updated
     steps:
-      -  name: Determine the AWS services used
-         run: |
-           echo "Determine the AWS services used"
+      - name: Detect AWS Services Used
+        run: |
+          # TODO: Invoke a GitHub Custom Action to determine the
+          #       AWS Services used - Lambda / Glue / State Machine etc.
+          echo "Determine the AWS services used."
 
-  _3-scan-iac:
-    name: DevSecOps IaC Scan
+  scan-iac:
+    name: IaC Security Scan
     runs-on: ubuntu-latest
-    needs: 
-      -  _1-files-updated
+    needs:
+      - files-updated
     steps:
-      -  name: Checkov Scan
-         run: |
-           echo "Checkov Scan"
+      - name: Run Checkov IaC Scan
+        run: |
+          # TODO: Run Checkov Scan on the IaC templates
+          echo "Checkov Scan"
 
-  _4-scan-code:
-    name: DevSecOps Code Scan
+  scan-code:
+    name: Code Vulnerability Scan
     runs-on: ubuntu-latest
-    needs: 
-      -  _2-scan-services
+    needs:
+      - detect-services
     steps:
-      -  name: Code Vulnarability Scan
-         run: |
-           echo "Code Vulnarability Scan"
+      - name: Run Code Security Scan
+        run: |
+          # TODO: Run Checkov or equivalent code scan
+          echo "Code Vulnerability Scan"
 
-  _5-ci-build:
-    name: Ci Build
+  ci-build:
+    name: CI Build
     runs-on: ubuntu-latest
-    needs: 
-      -  _3-scan-iac
-      -  _4-scan-code
+    needs:
+      - scan-iac
+      - scan-code
     steps:
-      -  name: Build Lambda
-         run: |
-           echo "Build Lambda"
+      - name: Build Lambda Package
+        run: |
+          # TODO: Build Lambda package
+          echo "Build Lambda"
 
-      -  name: Build Lambda Layer
-         run: |
-           echo "Build Lambda Layer"
+      - name: Build Lambda Layer
+        run: |
+          # TODO: Build Lambda layer
+          echo "Build Lambda Layer"
 
-      -  name: Build Glue Script
-         run: |
-           echo "Build Glue Script"
+      - name: Package Glue Script
+        run: |
+          # TODO: Build Glue Script
+          echo "Build Glue Script"
 
-      -  name: Build State Machine
-         run: |
-           echo "Build State Machine"
+      - name: Deploy State Machine
+        run: |
+          # TODO: State Machine setup/deployment
+          echo "Build State Machine"
+
 
   # build-test:
   #   name: Build and Test
