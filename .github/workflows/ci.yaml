@@ -147,7 +147,7 @@ jobs:
         run: echo "Guard Rail"
         
   prepare-builds:
-    name: Prepare Build Jobs
+    name: 📦 Prepare Build Jobs
     runs-on: ubuntu-latest
     needs:
       - cfn-lint
@@ -160,7 +160,7 @@ jobs:
         run: echo "Build jobs can now run."
 
   build-lambda:
-    name: Build Lambda Package
+    name: 📦 Build Lambda Package
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.lambda == 'true' }}
     needs:
@@ -170,7 +170,7 @@ jobs:
         run: echo "Building Lambda package..."
 
   build-lambda-layer:
-    name: Build Lambda Layer
+    name: 📦 Build Lambda Layer
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.lambda == 'true' }}
     needs:
@@ -180,7 +180,7 @@ jobs:
         run: echo "Building Lambda layer..."
 
   build-glue:
-    name: Build Glue Script
+    name: 📦 Build Glue Script
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.glue == 'true' }}
     needs:
@@ -190,7 +190,7 @@ jobs:
         run: echo "Packaging Glue script..."
 
   build-state-machine:
-    name: Deploy State Machine
+    name: 📦 Deploy State Machine
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.state-machine == 'true' }}
     needs:
@@ -200,7 +200,7 @@ jobs:
         run: echo "Deploying State Machine..."
 
   ci-build:
-    name: CI Build
+    name: 📦 CI Build
     runs-on: ubuntu-latest
     # if: ${{ github.event.inputs.ci-build == 'true' }}
     if: always()
