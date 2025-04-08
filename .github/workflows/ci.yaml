@@ -49,24 +49,24 @@ permissions:
   id-token: write
 
 jobs:
-  files-updated:
-    name: Files Updated
+  repo-changes:
+    name: 🔎 Detect Repo Changes
     runs-on: ubuntu-latest
     steps:
       - name: List Changed Files
         run: echo "Listing changed files."
 
   detect-services:
-    name: Detect Used AWS Services
+    name: 🔎 Detect Used AWS Services
     runs-on: ubuntu-latest
     needs:
-      - files-updated
+      - repo-changes
     steps:
       - name: Detect AWS Services Used
         run: echo "Detecting services used."
 
   cfn-lint:
-    name: CloudFormation Lint
+    name: 📋 CFN Lint
     runs-on: ubuntu-latest
     needs: detect-services
     steps:
@@ -82,7 +82,7 @@ jobs:
       #     cfn-lint ${{ github.event.inputs.cfn-template-file }}
 
   cfn-validate:
-    name: CloudFormation Template Validation
+    name: ✔️ CFN Validate
     runs-on: ubuntu-latest
     needs: detect-services
     steps:
@@ -98,7 +98,7 @@ jobs:
       #       --template-body file://${{ github.event.inputs.cfn-template-file }}
 
   checkov-scan:
-    name: Checkov IaC Scan
+    name: 🧳 Checkov IaC Scan
     runs-on: ubuntu-latest
     needs: detect-services
     steps:
@@ -114,7 +114,7 @@ jobs:
       #     checkov -f ${{ github.event.inputs.cfn-template-file }} --soft-fail
 
   snyk-scan:
-    name: Snyk IaC Scan
+    name: 🧾 Snyk IaC Scan
     runs-on: ubuntu-latest
     needs: detect-services
     env:
@@ -135,8 +135,9 @@ jobs:
       # - name: Run Snyk IaC Scan
       #   run: |
       #     snyk iac test ${{ github.event.inputs.cfn-template-file }} --org=${SNYK_ORG_ID} --report --severity-threshold=low || true
+      
   guard-rail:
-    name: Infra Guard Rail
+    name: 💂🏻‍♀️ Infra Guard Rail
     runs-on: ubuntu-latest
     needs: detect-services
     # env:
@@ -213,7 +214,7 @@ jobs:
         run: echo "CI build completed regardless of individual builds."
 
   infra-cost:
-    name: Infra Cost
+    name: 💰 Infra Cost
     runs-on: ubuntu-latest
     # if: ${{ github.event.inputs.ci-build == 'true' }}
     if: always()
