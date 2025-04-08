@@ -206,7 +206,7 @@ jobs:
     name: Infra Cost
     runs-on: ubuntu-latest
     # if: ${{ github.event.inputs.ci-build == 'true' }}
-    # if: always()
+    if: always()
     needs:
       - ci-build
     steps:
@@ -217,7 +217,7 @@ jobs:
     name: Create Release button
     runs-on: ubuntu-latest
     # if: ${{ github.event.inputs.ci-build == 'true' }}
-    # if: always()
+    if: always()
     needs:
       - infra-cost
     steps:
