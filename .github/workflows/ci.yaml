@@ -55,7 +55,7 @@ permissions:
 
 jobs:
   _1-files-updated:
-    name: Files Updated since last commit.
+    name: Files Updated.
     runs-on: ubuntu-latest
     steps:
       - name: List the files updated since last commit
