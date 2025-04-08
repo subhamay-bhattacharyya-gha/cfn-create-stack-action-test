@@ -54,7 +54,7 @@ permissions:
   id-token: write
 
 jobs:
-  files-updated:
+  _1-files-updated:
     name: Files Updated since last commit.
     runs-on: ubuntu-latest
     steps:
@@ -62,70 +62,70 @@ jobs:
         run: |
             echo "List of files updated since last commit."
 
-  scan-services:
+  _2-scan-services:
     name: Determine the services used
     runs-on: ubuntu-latest
     needs: 
-      -  files-updated
+      -  _1-files-updated
     steps:
       -  name: Determine the AWS services used
          run: |
            echo "Determine the AWS services used"
 
-  scan-iac:
+  _3-scan-iac:
     name: DevSecOps IaC Scan
     runs-on: ubuntu-latest
     needs: 
-      -  files-updated
+      -  _1-files-updated
     steps:
       -  name: Checkov Scan
          run: |
            echo "Checkov Scan"
 
-  scan-code:
-    name: DevSecOps Code Scan
-    runs-on: ubuntu-latest
-    needs: 
-      -  scan-services
-    steps:
-      -  name: Code Vulnarability Scan
-         run: |
-           echo "Code Vulnarability Scan"
+  # scan-code:
+  #   name: DevSecOps Code Scan
+  #   runs-on: ubuntu-latest
+  #   needs: 
+  #     -  scan-services
+  #   steps:
+  #     -  name: Code Vulnarability Scan
+  #        run: |
+  #          echo "Code Vulnarability Scan"
 
-  build-code:
-    name: Build Code
-    runs-on: ubuntu-latest
-    needs: 
-      -  scan-services
-      -  scan-iac
-      -  scan-code
-    steps:
-      -  name: Build Lambda
-         run: |
-           echo "Build Lambda"
+  # build-code:
+  #   name: Build Code
+  #   runs-on: ubuntu-latest
+  #   needs: 
+  #     -  scan-services
+  #     -  scan-iac
+  #     -  scan-code
+  #   steps:
+  #     -  name: Build Lambda
+  #        run: |
+  #          echo "Build Lambda"
 
-      -  name: Build Lambda Layer
-         run: |
-           echo "Build Lambda Layer"
+  #     -  name: Build Lambda Layer
+  #        run: |
+  #          echo "Build Lambda Layer"
 
-      -  name: Build Glue Script
-         run: |
-           echo "Build Glue Script"
+  #     -  name: Build Glue Script
+  #        run: |
+  #          echo "Build Glue Script"
 
-      -  name: Build State Machine
-         run: |
-           echo "Build State Machine"
+  #     -  name: Build State Machine
+  #        run: |
+  #          echo "Build State Machine"
 
-  build-test:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    needs: 
-      -  build-code
-      -  scan-iac
-    steps:
-    -  name: Build and Test
-       run: |
-         echo "Build and Test"
+  # build-test:
+  #   name: Build and Test
+  #   runs-on: ubuntu-latest
+  #   needs: 
+  #     -  build-code
+  #     -  scan-iac
+  #   steps:
+  #   -  name: Build and Test
+  #      run: |
+  #        echo "Build and Test"
       
                 
  
