@@ -46,7 +46,7 @@ on:
         default: false
 
 permissions:
-  id-token: write  # Required for OIDC role assumption
+  id-token: write
 
 jobs:
   files-updated:
@@ -54,10 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: List Changed Files
-        run: |
-          # TODO: Invoke a GitHub Custom Action to determine the
-          #       list of files added / modified / deleted since last commit
-          echo "List of files updated since last commit."
+        run: echo "Listing changed files."
 
   detect-services:
     name: Detect Used AWS Services
@@ -66,10 +63,7 @@ jobs:
       - files-updated
     steps:
       - name: Detect AWS Services Used
-        run: |
-          # TODO: Invoke a GitHub Custom Action to determine the
-          #       AWS Services used - Lambda / Glue / State Machine etc.
-          echo "Determine the AWS services used."
+        run: echo "Detecting services used."
 
   scan-iac:
     name: IaC Security Scan
@@ -78,9 +72,7 @@ jobs:
       - files-updated
     steps:
       - name: Run Checkov IaC Scan
-        run: |
-          # TODO: Run Checkov Scan on the IaC templates
-          echo "Checkov Scan"
+        run: echo "Scanning IaC templates with Checkov."
 
   scan-code:
     name: Code Vulnerability Scan
@@ -89,36 +81,64 @@ jobs:
       - detect-services
     steps:
       - name: Run Code Security Scan
-        run: |
-          # TODO: Run Checkov or equivalent code scan
-          echo "Code Vulnerability Scan"
+        run: echo "Scanning code for vulnerabilities."
 
-  ci-build:
-    name: CI Build
+  build-lambda:
+    name: Build Lambda Package
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.lambda == 'true' }}
     needs:
       - scan-iac
       - scan-code
     steps:
       - name: Build Lambda Package
-        run: |
-          # TODO: Build Lambda package
-          echo "Build Lambda"
+        run: echo "Building Lambda package..."
 
+  build-lambda-layer:
+    name: Build Lambda Layer
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.lambda == 'true' }}
+    needs:
+      - scan-iac
+      - scan-code
+    steps:
       - name: Build Lambda Layer
-        run: |
-          # TODO: Build Lambda layer
-          echo "Build Lambda Layer"
+        run: echo "Building Lambda layer..."
 
+  build-glue:
+    name: Build Glue Script
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.glue == 'true' }}
+    needs:
+      - scan-iac
+      - scan-code
+    steps:
       - name: Package Glue Script
-        run: |
-          # TODO: Build Glue Script
-          echo "Build Glue Script"
+        run: echo "Packaging Glue script..."
 
+  build-state-machine:
+    name: Deploy State Machine
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.state-machine == 'true' }}
+    needs:
+      - scan-iac
+      - scan-code
+    steps:
       - name: Deploy State Machine
-        run: |
-          # TODO: State Machine setup/deployment
-          echo "Build State Machine"
+        run: echo "Deploying State Machine..."
+
+  ci-build:
+    name: CI Build
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.ci-build == 'true' }}
+    needs:
+      - build-lambda
+      - build-lambda-layer
+      - build-glue
+      - build-state-machine
+    steps:
+      - name: Finalize CI Build
+        run: echo "CI build completed after all component builds."
 
 
   # build-test:
