@@ -55,7 +55,7 @@ permissions:
 
 jobs:
   files-updated:
-    name: Files Upadted
+    name: Files Updated since last commit.
     runs-on: ubuntu-latest
     steps:
       - name: List the files updated since last commit
@@ -76,7 +76,7 @@ jobs:
     name: DevSecOps Scan (IaC vulnarabilities)
     runs-on: ubuntu-latest
     needs: 
-      -  scan-services
+      -  files-updated
     steps:
       -  name: Checkov Scan
          run: |
